@@ -16,10 +16,10 @@ type Order struct {
 	ID         int64
 	OrderItems map[int64]OrderItem
 	Status     OrderStatus
-	nextID     int64
+	nextItemID int64
 }
 
-func CreateOrder(id int64, status OrderStatus) (*Order, error) {
+func CreateOrder(id int64) (*Order, error) {
 	if id < 0 {
 		return nil, fmt.Errorf("Id не может быть отрицательным числом")
 	}
@@ -28,11 +28,11 @@ func CreateOrder(id int64, status OrderStatus) (*Order, error) {
 		ID:         id,
 		OrderItems: make(map[int64]OrderItem),
 		Status:     "создан",
-		nextID:     0,
+		nextItemID: 0,
 	}, nil
 }
 
 func (o *Order) AddOrderItem(oi OrderItem) {
-	o.nextID += 1
-	o.OrderItems[o.nextID] = oi
+	o.nextItemID += 1
+	o.OrderItems[o.nextItemID] = oi
 }
