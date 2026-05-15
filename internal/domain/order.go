@@ -1,6 +1,8 @@
 package domain
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type OrderStatus string
 
@@ -12,8 +14,9 @@ const (
 
 type Order struct {
 	ID         int64
-	OrderItems []OrderItem
+	OrderItems map[int64]OrderItem
 	Status     OrderStatus
+	nextID     int64
 }
 
 func CreateOrder(id int64, status OrderStatus) (*Order, error) {
@@ -23,7 +26,13 @@ func CreateOrder(id int64, status OrderStatus) (*Order, error) {
 
 	return &Order{
 		ID:         id,
-		OrderItems: make([]OrderItem, 0),
+		OrderItems: make(map[int64]OrderItem),
 		Status:     "создан",
+		nextID:     0,
 	}, nil
+}
+
+func (o *Order) AddOrderItem(oi OrderItem) {
+	o.nextID += 1
+	o.OrderItems[o.nextID] = oi
 }
