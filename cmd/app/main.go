@@ -7,18 +7,18 @@ import (
 
 func main() {
 
-	Orders := domain.NewOrder()
+	Orders, _ := domain.NewOrder(123)
 
-	OrderItem1, err := domain.NewOrderItem("Кроссы", 7000, "NIKE", 2)
+	OrderItem1, err := domain.NewOrderItem("Кроссы", 7000, "NIKE")
 	if err != nil {
 		panic(err)
 	}
-	OrderItem2, err := domain.NewOrderItem("Мяч", 3000, "хз", 1)
+	OrderItem2, err := domain.NewOrderItem("Мяч", 3000, "хз")
 	if err != nil {
 		panic(err)
 	}
 
-	OrderItem3, err := domain.NewOrderItem("Сиги", 200, "мальборо красный в моем кармане", 1)
+	OrderItem3, err := domain.NewOrderItem("Сиги", 200, "мальборо красный в моем кармане")
 	if err != nil {
 		panic(err)
 	}
