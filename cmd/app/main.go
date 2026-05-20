@@ -6,26 +6,31 @@ import (
 )
 
 func main() {
-
-	Orders, _ := domain.NewOrder(123)
-
-	OrderItem1, err := domain.NewOrderItem("Кроссы", 7000, "NIKE", 15)
+	Sneakers, err := domain.NewProduct(1, "ботинки", "спортивные ботинки", 5000)
 	if err != nil {
 		panic(err)
 	}
-	OrderItem2, err := domain.NewOrderItem("Мяч", 3000, "хз", 15)
+	Cigs, err := domain.NewProduct(1, "сиги", "мальборо", 250)
+
+	SneakersOrder, err := domain.NewOrderItem(*Sneakers, 2)
 	if err != nil {
 		panic(err)
 	}
 
-	OrderItem3, err := domain.NewOrderItem("Сиги", 200, "мальборо красный в моем кармане", 15)
+	CigsOrder, err := domain.NewOrderItem(*Cigs, 10)
 	if err != nil {
 		panic(err)
 	}
-	Orders.AddOrderItem(*OrderItem1)
-	Orders.AddOrderItem(*OrderItem2)
-	Orders.AddOrderItem(*OrderItem3)
 
-	fmt.Println(Orders)
+	Order1, err := domain.NewOrder(1)
+	if err != nil {
+		panic(err)
+	}
 
+	Order1.AddOrderItem(*CigsOrder)
+	Order1.AddOrderItem(*SneakersOrder)
+
+	for _, v := range Order1.OrderItems {
+		fmt.Println("Позиция: ", v.Name, "Количество: ", v.Quantity)
+	}
 }
