@@ -1,27 +1,22 @@
 package domain
 
-import "fmt"
-
 type OrderItem struct {
-	Name        string
-	Price       float64
-	Description string
-	Quantity    int
+	ProductID int64
+	Name      string
+	Price     float64
+	Quantity  int
 }
 
-func NewOrderItem(name string, price float64, description string, quantity int) (*OrderItem, error) {
-	if price < 0 {
-		return nil, fmt.Errorf("цена не может быть отрицательной")
-	}
+func NewOrderItem(product Product, quantity int) (*OrderItem, error) {
 
 	if quantity <= 0 {
-		return nil, fmt.Errorf("количество должно быть положительным")
+		return nil, ErrInvalidQuantity
 	}
 
 	return &OrderItem{
-		Name:        name,
-		Price:       price,
-		Description: description,
-		Quantity:    quantity,
+		ProductID: product.ID,
+		Name:      product.Name,
+		Price:     product.Price,
+		Quantity:  quantity,
 	}, nil
 }

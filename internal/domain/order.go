@@ -14,7 +14,7 @@ const (
 
 type Order struct {
 	ID         int64
-	OrderItems map[int64]OrderItem
+	OrderItems []OrderItem
 	Status     OrderStatus
 	nextItemID int64
 }
@@ -26,13 +26,32 @@ func NewOrder(id int64) (*Order, error) {
 
 	return &Order{
 		ID:         id,
-		OrderItems: make(map[int64]OrderItem),
+		OrderItems: make([]OrderItem, 0),
 		Status:     "создан",
-		nextItemID: 0,
 	}, nil
 }
 
-func (o *Order) AddOrderItem(oi OrderItem) {
+func (o *Order) AddProduct(product Product, quantity int) error {
+	oi, err := NewOrderItem(product, quantity)
+	if err != nil {
+		return err
+	}
 	o.nextItemID += 1
-	o.OrderItems[o.nextItemID] = oi
+	o.OrderItems = append(o.OrderItems, *oi)
+	return nil
 }
+
+// TODO
+// сделать возможность хранить позиции заказа
+
+//TODO
+//Добавлять позицию
+
+//TODO
+// Считать итоговую сумму заказа
+
+//TODO
+// Изменить статус на оплачен
+
+// TODO
+// Изменить статус на отмемнен
