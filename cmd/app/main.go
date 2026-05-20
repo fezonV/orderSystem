@@ -12,23 +12,13 @@ func main() {
 	}
 	Cigs, err := domain.NewProduct(1, "сиги", "мальборо", 250)
 
-	SneakersOrder, err := domain.NewOrderItem(*Sneakers, 2)
-	if err != nil {
-		panic(err)
-	}
-
-	CigsOrder, err := domain.NewOrderItem(*Cigs, 10)
-	if err != nil {
-		panic(err)
-	}
-
 	Order1, err := domain.NewOrder(1)
 	if err != nil {
 		panic(err)
 	}
 
-	Order1.AddOrderItem(*CigsOrder)
-	Order1.AddOrderItem(*SneakersOrder)
+	Order1.AddProduct(*Sneakers, 2)
+	Order1.AddProduct(*Cigs, 10)
 
 	for _, v := range Order1.OrderItems {
 		fmt.Println("Позиция: ", v.Name, "Количество: ", v.Quantity)
