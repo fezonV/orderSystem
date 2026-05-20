@@ -19,7 +19,7 @@ type Order struct {
 	nextItemID int64
 }
 
-func CreateOrder(id int64) (*Order, error) {
+func NewOrder(id int64) (*Order, error) {
 	if id < 0 {
 		return nil, fmt.Errorf("Id не может быть отрицательным числом")
 	}

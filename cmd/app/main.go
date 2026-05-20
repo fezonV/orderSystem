@@ -9,16 +9,16 @@ func main() {
 
 	Orders, _ := domain.NewOrder(123)
 
-	OrderItem1, err := domain.NewOrderItem("Кроссы", 7000, "NIKE")
+	OrderItem1, err := domain.NewOrderItem("Кроссы", 7000, "NIKE", 15)
 	if err != nil {
 		panic(err)
 	}
-	OrderItem2, err := domain.NewOrderItem("Мяч", 3000, "хз")
+	OrderItem2, err := domain.NewOrderItem("Мяч", 3000, "хз", 15)
 	if err != nil {
 		panic(err)
 	}
 
-	OrderItem3, err := domain.NewOrderItem("Сиги", 200, "мальборо красный в моем кармане")
+	OrderItem3, err := domain.NewOrderItem("Сиги", 200, "мальборо красный в моем кармане", 15)
 	if err != nil {
 		panic(err)
 	}
