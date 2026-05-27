@@ -1,9 +1,5 @@
 package domain
 
-import (
-	"fmt"
-)
-
 type OrderStatus string
 
 const (
@@ -21,38 +17,69 @@ type Order struct {
 
 func NewOrder(id int64) (*Order, error) {
 	if id < 0 {
-		return nil, fmt.Errorf("Id не может быть отрицательным числом")
+		return nil, ErrInvalidID
 	}
 
 	return &Order{
 		ID:         id,
 		OrderItems: make([]OrderItem, 0),
-		Status:     "создан",
+		Status:     OrderStatusCreated,
 	}, nil
 }
 
 func (o *Order) AddProduct(product Product, quantity int) error {
-	oi, err := NewOrderItem(product, quantity)
+	if o.Status == OrderStatusCanceled {
+		return ErrOrderAlreadyCanceled
+	}
+	if o.Status == OrderStatusPaid {
+		return ErrOrderAlreadyPaid
+	}
+	itemID := o.nextItemID + 1
+	oi, err := NewOrderItem(itemID, product, quantity)
 	if err != nil {
 		return err
 	}
-	o.nextItemID += 1
+
+	o.nextItemID = itemID
 	o.OrderItems = append(o.OrderItems, *oi)
 	return nil
 }
 
 // TODO
-// сделать возможность хранить позиции заказа
-
-
-//TODO
-//Добавлять позицию
-
-//TODO
 // Считать итоговую сумму заказа
+func (o Order) TotalSum() float64 {
+	sum := 0.0
+	for _, v := range o.OrderItems {
+		sum += v.Price * float64(v.Quantity)
+	}
+	return sum
+}
 
-//TODO
+// TODO
 // Изменить статус на оплачен
+func (o *Order) ChangeStatusPaid() error {
+	if o.Status == OrderStatusPaid {
+		return ErrOrderAlreadyPaid
+	}
+	if o.Status == OrderStatusCanceled {
+		return ErrOrderAlreadyCanceled
+	}
+	if len(o.OrderItems) == 0 {
+		return ErrOrderIsEmpty
+	}
+	o.Status = OrderStatusPaid
+	return nil
+}
 
 // TODO
 // Изменить статус на отмемнен
+func (o *Order) ChangeStatusCanceled() error {
+	if o.Status == OrderStatusPaid {
+		return ErrOrderAlreadyPaid
+	}
+	if o.Status == OrderStatusCanceled {
+		return ErrOrderAlreadyCanceled
+	}
+	o.Status = OrderStatusCanceled
+	return nil
+}
