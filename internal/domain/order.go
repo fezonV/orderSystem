@@ -45,8 +45,6 @@ func (o *Order) AddProduct(product Product, quantity int) error {
 	return nil
 }
 
-// TODO
-// Считать итоговую сумму заказа
 func (o Order) TotalSum() float64 {
 	sum := 0.0
 	for _, v := range o.OrderItems {
@@ -55,9 +53,7 @@ func (o Order) TotalSum() float64 {
 	return sum
 }
 
-// TODO
-// Изменить статус на оплачен
-func (o *Order) ChangeStatusPaid() error {
+func (o *Order) Pay() error {
 	if o.Status == OrderStatusPaid {
 		return ErrOrderAlreadyPaid
 	}
@@ -73,7 +69,7 @@ func (o *Order) ChangeStatusPaid() error {
 
 // TODO
 // Изменить статус на отмемнен
-func (o *Order) ChangeStatusCanceled() error {
+func (o *Order) Cancel() error {
 	if o.Status == OrderStatusPaid {
 		return ErrOrderAlreadyPaid
 	}
