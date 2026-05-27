@@ -44,6 +44,7 @@ func (o *Order) AddProduct(product Product, quantity int) error {
 // TODO
 // сделать возможность хранить позиции заказа
 
+
 //TODO
 //Добавлять позицию
 
