@@ -25,3 +25,19 @@ func TestNewProduct(t *testing.T) {
 		t.Fatalf("Ожидали price = 1000, получили %v", product.Price)
 	}
 }
+
+func TestNewProductWithNegativeID(t *testing.T) {
+	_, err := NewProduct(-1, "Майка", "Белая майка из хлопка", 1000.0)
+
+	if err != ErrInvalidID {
+		t.Fatalf("ожидали ErrInvalidID, получили %v", err)
+	}
+}
+
+func TestNewProductWithNegativePrice(t *testing.T) {
+	_, err := NewProduct(3, "Майка", "Белая майка из хлопка", -1000.0)
+
+	if err != ErrInvalidPrice {
+		t.Fatalf("ожидали ErrInvalidPrice, получили %v", err)
+	}
+}
