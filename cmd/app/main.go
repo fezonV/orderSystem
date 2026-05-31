@@ -8,7 +8,7 @@ import (
 
 func main() {
 	repo := memory.NewOrderRepository()
-	service := usecase.NewOrderService(&repo)
+	service := usecase.NewOrderService(repo)
 
 	product, err := domain.NewProduct(1, "Кроссовки", "Кроссовки белые", 7000.0)
 	if err != nil {

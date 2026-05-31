@@ -9,9 +9,9 @@ type OrderService struct {
 	orderRepo repository.OrderRepository
 }
 
-func NewOrderService(or *repository.OrderRepository) *OrderService {
+func NewOrderService(or repository.OrderRepository) *OrderService {
 	return &OrderService{
-		orderRepo: *or,
+		orderRepo: or,
 	}
 }
 
@@ -39,4 +39,30 @@ func (s *OrderService) AddProductToOrder(
 	}
 	return s.orderRepo.Save(order)
 
+}
+
+func (s *OrderService) GetOrder(id int64) (*domain.Order, error) {
+	return s.orderRepo.GetByID(id)
+}
+
+func (s *OrderService) PayOrder(id int64) error {
+	order, err := s.orderRepo.GetByID(id)
+	if err != nil {
+		return err
+	}
+	if err := order.Pay(); err != nil {
+		return err
+	}
+	return s.orderRepo.Save(order)
+}
+
+func (s *OrderService) CancelOrder(id int64) error {
+	order, err := s.orderRepo.GetByID(id)
+	if err != nil {
+		return err
+	}
+	if err := order.Cancel(); err != nil {
+		return err
+	}
+	return s.orderRepo.Save(order)
 }
