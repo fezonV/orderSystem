@@ -3,10 +3,12 @@ package usecase
 import (
 	"orderSystem/internal/domain"
 	"orderSystem/internal/repository"
+	"sync/atomic"
 )
 
 type OrderService struct {
-	orderRepo repository.OrderRepository
+	orderRepo   repository.OrderRepository
+	nextOrderID int64
 }
 
 func NewOrderService(or repository.OrderRepository) *OrderService {
@@ -15,7 +17,8 @@ func NewOrderService(or repository.OrderRepository) *OrderService {
 	}
 }
 
-func (s *OrderService) CreateOrder(id int64) (*domain.Order, error) {
+func (s *OrderService) CreateOrder() (*domain.Order, error) {
+	id := atomic.AddInt64(&s.nextOrderID, 1)
 	order, err := domain.NewOrder(id)
 	if err != nil {
 		return nil, err

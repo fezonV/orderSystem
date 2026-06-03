@@ -10,7 +10,7 @@ func TestCreateOrder(t *testing.T) {
 	os := memory.NewOrderRepository()
 	service := NewOrderService(os)
 
-	_, err := service.CreateOrder(1)
+	_, err := service.CreateOrder()
 	if err != nil {
 		t.Fatalf("ошибка при создании заказа: %v", err)
 	}
@@ -29,7 +29,7 @@ func TestCreateOrder(t *testing.T) {
 func TestAddProductToOrder(t *testing.T) {
 	os := memory.NewOrderRepository()
 	service := NewOrderService(os)
-	_, err := service.CreateOrder(1)
+	_, err := service.CreateOrder()
 	if err != nil {
 		t.Fatalf("не удалось создать заказ: %v", err)
 	}
@@ -66,16 +66,7 @@ func TestAddProductToOrder(t *testing.T) {
 		t.Fatalf("ожидали price = 120.0, получили %v", order.OrderItems[0].Price)
 	}
 }
-func TestCreateOrderWithNegativeID(t *testing.T) {
-	repo := memory.NewOrderRepository()
-	os := NewOrderService(repo)
 
-	_, err := os.CreateOrder(-1)
-
-	if err != domain.ErrInvalidID {
-		t.Fatalf("ожидали ErrInvalidID, получили %v", err)
-	}
-}
 func TestAddProductToOrderNotFound(t *testing.T) {
 	repo := memory.NewOrderRepository()
 	os := NewOrderService(repo)
@@ -99,7 +90,7 @@ func TestAddProductToOrderWithInvalidQuantity(t *testing.T) {
 		t.Fatalf("не удалось создать продукт: %v", err)
 	}
 
-	_, err = os.CreateOrder(1)
+	_, err = os.CreateOrder()
 
 	if err != nil {
 		t.Fatalf("не удалось создать заказ: %v", err)
@@ -115,7 +106,7 @@ func TestGetOrder(t *testing.T) {
 	repo := memory.NewOrderRepository()
 	os := NewOrderService(repo)
 
-	_, err := os.CreateOrder(1)
+	_, err := os.CreateOrder()
 	if err != nil {
 		t.Fatalf("не удалось создать заказ")
 	}
@@ -134,7 +125,7 @@ func TestPayOrder(t *testing.T) {
 	repo := memory.NewOrderRepository()
 	os := NewOrderService(repo)
 
-	_, err := os.CreateOrder(1)
+	_, err := os.CreateOrder()
 	if err != nil {
 		t.Fatalf("не удалось создать заказ")
 	}
@@ -154,7 +145,7 @@ func TestCancelOrder(t *testing.T) {
 	repo := memory.NewOrderRepository()
 	os := NewOrderService(repo)
 
-	_, err := os.CreateOrder(1)
+	_, err := os.CreateOrder()
 	if err != nil {
 		t.Fatalf("не удалось создать заказ")
 	}

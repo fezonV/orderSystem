@@ -14,6 +14,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	order, err := service.CreateOrder(1)
+	order, err := service.CreateOrder()
 	err = service.AddProductToOrder(order.ID, *product, 2)
 }
