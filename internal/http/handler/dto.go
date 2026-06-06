@@ -9,7 +9,7 @@ type OrderItemResponse struct {
 }
 
 type OrderResponse struct {
-	ItemID     int64               `json:"item_id"`
+	OrderID    int64               `json:"order_id"`
 	Status     string              `json:"status"`
 	OrderItems []OrderItemResponse `json:"orderItems"`
 	TotalSum   float64             `json:"total_sum"`
