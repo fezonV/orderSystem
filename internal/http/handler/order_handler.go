@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"orderSystem/internal/domain"
 	"orderSystem/internal/usecase"
+	"strconv"
 )
 
 type OrderHandler struct {
@@ -50,6 +51,25 @@ func (oh *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 // получить заказ
+func (oh *OrderHandler) GetOrder(w http.ResponseWriter, r *http.Request) {
+	idStr := r.PathValue("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	order, err := oh.service.GetOrder(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusNotFound)
+	response := toOrderResponse(order)
+	json.NewEncoder(w).Encode(response)
+}
 
 // добавить продукт в заказ
 
