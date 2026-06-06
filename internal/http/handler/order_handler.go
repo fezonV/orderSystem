@@ -47,7 +47,11 @@ func (oh *OrderHandler) CreateOrderHandler(w http.ResponseWriter, r *http.Reques
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	response := toOrderResponse(order)
-	json.NewEncoder(w).Encode(response)
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 // получить заказ
@@ -68,7 +72,11 @@ func (oh *OrderHandler) GetOrderHandler(w http.ResponseWriter, r *http.Request) 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusNotFound)
 	response := toOrderResponse(order)
-	json.NewEncoder(w).Encode(response)
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 // добавить продукт в заказ
@@ -109,8 +117,11 @@ func (oh *OrderHandler) AddProductHandler(w http.ResponseWriter, r *http.Request
 	response := toOrderResponse(updatedOrder)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
-
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 // оплатить заказ
@@ -129,8 +140,12 @@ func (oh *OrderHandler) OrderPayHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	err = oh.service.PayOrder(order.ID)
-	if err != nil {
+
+	if err == domain.ErrOrderAlreadyPaid || err == domain.ErrOrderAlreadyCanceled {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	} else if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
@@ -143,7 +158,42 @@ func (oh *OrderHandler) OrderPayHandler(w http.ResponseWriter, r *http.Request) 
 	response := toOrderResponse(updatedOrder)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 // отменить заказ
+func (oh *OrderHandler) CancelOrderHandler(w http.ResponseWriter, r *http.Request) {
+	idStr := r.PathValue("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	err = oh.service.CancelOrder(id)
+
+	if err == domain.ErrOrderAlreadyPaid || err == domain.ErrOrderAlreadyCanceled {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	} else if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	updatedOrder, err := oh.service.GetOrder(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	response := toOrderResponse(updatedOrder)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
