@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"orderSystem/internal/domain"
 	"orderSystem/internal/usecase"
@@ -17,6 +18,26 @@ func NewOrderHandler(service usecase.OrderService) *OrderHandler {
 		service: service,
 	}
 }
+
+func writeOrderError(w http.ResponseWriter, err error) {
+	status := http.StatusInternalServerError
+
+	switch {
+	case errors.Is(err, domain.ErrOrderNotFound):
+		status = http.StatusNotFound
+	case errors.Is(err, domain.ErrOrderAlreadyPaid),
+		errors.Is(err, domain.ErrOrderAlreadyCanceled):
+		status = http.StatusConflict
+	case errors.Is(err, domain.ErrOrderIsEmpty),
+		errors.Is(err, domain.ErrInvalidQuantity),
+		errors.Is(err, domain.ErrInvalidPrice),
+		errors.Is(err, domain.ErrInvalidID):
+		status = http.StatusBadRequest
+	}
+
+	http.Error(w, err.Error(), status)
+}
+
 func toOrderResponse(order *domain.Order) OrderResponse {
 	items := make([]OrderItemResponse, 0, len(order.OrderItems))
 
@@ -65,12 +86,12 @@ func (oh *OrderHandler) GetOrderHandler(w http.ResponseWriter, r *http.Request) 
 	}
 	order, err := oh.service.GetOrder(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		writeOrderError(w, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusNotFound)
+	w.WriteHeader(http.StatusOK)
 	response := toOrderResponse(order)
 	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
@@ -101,12 +122,12 @@ func (oh *OrderHandler) AddProductHandler(w http.ResponseWriter, r *http.Request
 	}
 	order, err := oh.service.GetOrder(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		writeOrderError(w, err)
 		return
 	}
 	err = oh.service.AddProductToOrder(order.ID, *product, int(request.Quantity))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		writeOrderError(w, err)
 		return
 	}
 	updatedOrder, err := oh.service.GetOrder(order.ID)
@@ -135,17 +156,13 @@ func (oh *OrderHandler) OrderPayHandler(w http.ResponseWriter, r *http.Request) 
 
 	order, err := oh.service.GetOrder(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		writeOrderError(w, err)
 		return
 	}
 
 	err = oh.service.PayOrder(order.ID)
-
-	if err == domain.ErrOrderAlreadyPaid || err == domain.ErrOrderAlreadyCanceled {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	} else if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+	if err != nil {
+		writeOrderError(w, err)
 		return
 	}
 
@@ -174,12 +191,8 @@ func (oh *OrderHandler) CancelOrderHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	err = oh.service.CancelOrder(id)
-
-	if err == domain.ErrOrderAlreadyPaid || err == domain.ErrOrderAlreadyCanceled {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	} else if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+	if err != nil {
+		writeOrderError(w, err)
 		return
 	}
 	updatedOrder, err := oh.service.GetOrder(id)
