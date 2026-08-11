@@ -15,7 +15,7 @@ func NewOrderRepository() repository.OrderRepository {
 	}
 }
 func (r *OrderRepository) Save(order *domain.Order) error {
-	r.orders[order.ID] = order
+	r.orders[order.ID()] = order
 	return nil
 }
 

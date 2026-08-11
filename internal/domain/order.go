@@ -9,29 +9,46 @@ const (
 )
 
 type Order struct {
-	ID         int64
-	OrderItems []OrderItem
-	Status     OrderStatus
+	id         int64
+	items      []OrderItem
+	status     OrderStatus
 	nextItemID int64
 }
 
+func (o *Order) ID() int64 {
+	return o.id
+}
+
+func (o *Order) Status() OrderStatus {
+	return o.status
+}
+
+// Возвращает копию списка элементов заказа
+func (o *Order) Items() []OrderItem {
+	items := make([]OrderItem, len(o.items))
+
+	copy(items, o.items)
+
+	return items
+}
+
 func NewOrder(id int64) (*Order, error) {
-	if id < 0 {
+	if id <= 0 {
 		return nil, ErrInvalidID
 	}
 
 	return &Order{
-		ID:         id,
-		OrderItems: make([]OrderItem, 0),
-		Status:     OrderStatusCreated,
+		id:     id,
+		items:  make([]OrderItem, 0),
+		status: OrderStatusCreated,
 	}, nil
 }
 
 func (o *Order) AddProduct(product Product, quantity int) error {
-	if o.Status == OrderStatusCanceled {
+	if o.status == OrderStatusCanceled {
 		return ErrOrderAlreadyCanceled
 	}
-	if o.Status == OrderStatusPaid {
+	if o.status == OrderStatusPaid {
 		return ErrOrderAlreadyPaid
 	}
 	itemID := o.nextItemID + 1
@@ -41,41 +58,41 @@ func (o *Order) AddProduct(product Product, quantity int) error {
 	}
 
 	o.nextItemID = itemID
-	o.OrderItems = append(o.OrderItems, *oi)
+	o.items = append(o.items, *oi)
 	return nil
 }
 
 func (o Order) TotalSum() float64 {
 	sum := 0.0
-	for _, v := range o.OrderItems {
+	for _, v := range o.items {
 		sum += v.Price * float64(v.Quantity)
 	}
 	return sum
 }
 
 func (o *Order) Pay() error {
-	if o.Status == OrderStatusPaid {
+	if o.status == OrderStatusPaid {
 		return ErrOrderAlreadyPaid
 	}
-	if o.Status == OrderStatusCanceled {
+	if o.status == OrderStatusCanceled {
 		return ErrOrderAlreadyCanceled
 	}
-	if len(o.OrderItems) == 0 {
+	if len(o.items) == 0 {
 		return ErrOrderIsEmpty
 	}
-	o.Status = OrderStatusPaid
+	o.status = OrderStatusPaid
 	return nil
 }
 
 // TODO
 // Изменить статус на отмемнен
 func (o *Order) Cancel() error {
-	if o.Status == OrderStatusPaid {
+	if o.Status() == OrderStatusPaid {
 		return ErrOrderAlreadyPaid
 	}
-	if o.Status == OrderStatusCanceled {
+	if o.Status() == OrderStatusCanceled {
 		return ErrOrderAlreadyCanceled
 	}
-	o.Status = OrderStatusCanceled
+	o.status = OrderStatusCanceled
 	return nil
 }

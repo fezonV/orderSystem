@@ -21,8 +21,8 @@ func TestCreateOrder(t *testing.T) {
 		t.Fatalf("ошибка при получении заказа: %v", err)
 	}
 
-	if order.ID != 1 {
-		t.Fatalf("ожидали id = 1, получили %v", order.ID)
+	if order.ID() != 1 {
+		t.Fatalf("ожидали id = 1, получили %v", order.ID())
 	}
 }
 
@@ -48,22 +48,22 @@ func TestAddProductToOrder(t *testing.T) {
 	if err != nil {
 		t.Fatalf("не удалось получить заказ: %v", err)
 	}
-	if len(order.OrderItems) != 1 {
-		t.Fatalf("ожидали 1 позицию, получили %v", len(order.OrderItems))
+	if len(order.Items()) != 1 {
+		t.Fatalf("ожидали 1 позицию, получили %v", len(order.Items()))
 	}
-	if order.OrderItems[0].ProductID != 123 {
-		t.Fatalf("ожидали product id = 123, получили %v", order.OrderItems[0].ProductID)
-	}
-
-	if order.OrderItems[0].ID != 1 {
-		t.Fatalf("ожидали id = 1, получили %v", order.OrderItems[0].ID)
+	if order.Items()[0].ProductID != 123 {
+		t.Fatalf("ожидали product id = 123, получили %v", order.Items()[0].ProductID)
 	}
 
-	if order.OrderItems[0].Name != "Чипсы" {
-		t.Fatalf("ожидали Name = Чипсы, получили %v", order.OrderItems[0].Name)
+	if order.Items()[0].ID != 1 {
+		t.Fatalf("ожидали id = 1, получили %v", order.Items()[0].ID)
 	}
-	if order.OrderItems[0].Price != 120.0 {
-		t.Fatalf("ожидали price = 120.0, получили %v", order.OrderItems[0].Price)
+
+	if order.Items()[0].Name != "Чипсы" {
+		t.Fatalf("ожидали Name = Чипсы, получили %v", order.Items()[0].Name)
+	}
+	if order.Items()[0].Price != 120.0 {
+		t.Fatalf("ожидали price = 120.0, получили %v", order.Items()[0].Price)
 	}
 }
 
@@ -116,7 +116,7 @@ func TestGetOrder(t *testing.T) {
 		t.Fatalf("не удалось получить заказ")
 	}
 
-	if order.ID != 1 {
+	if order.ID() != 1 {
 		t.Fatalf("ожидали id = 1, получили %v", 1)
 	}
 }
@@ -152,7 +152,7 @@ func TestCancelOrder(t *testing.T) {
 	os.CancelOrder(1)
 	order, err := os.GetOrder(1)
 
-	if order.Status != domain.OrderStatusCanceled {
-		t.Fatalf("ожидали отменен, получили %v", order.Status)
+	if order.Status() != domain.OrderStatusCanceled {
+		t.Fatalf("ожидали отменен, получили %v", order.Status())
 	}
 }

@@ -13,8 +13,8 @@ func TestSaveOrder(t *testing.T) {
 		t.Fatalf("не удалось создать заказ")
 	}
 
-	if order.ID != 1 {
-		t.Fatalf("ожидали id = 1, получили %v", order.ID)
+	if order.ID() != 1 {
+		t.Fatalf("ожидали id = 1, получили %v", order.ID())
 	}
 
 	err = or.Save(order)
@@ -27,8 +27,8 @@ func TestSaveOrder(t *testing.T) {
 	if err != nil {
 		t.Fatalf("не удалось получить заказ из репозитория")
 	}
-	if newOrder.ID != 1 {
-		t.Fatalf("Не удалось получить заказ по id: ожидали id = 1, получили %v", newOrder.ID)
+	if newOrder.ID() != 1 {
+		t.Fatalf("Не удалось получить заказ по id: ожидали id = 1, получили %v", newOrder.ID())
 	}
 }
 

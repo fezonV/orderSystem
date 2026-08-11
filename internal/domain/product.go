@@ -8,10 +8,10 @@ type Product struct {
 }
 
 func NewProduct(id int64, name string, desc string, price float64) (*Product, error) {
-	if id < 0 {
+	if id <= 0 {
 		return nil, ErrInvalidID
 	}
-	if price < 0 {
+	if price <= 0 {
 		return nil, ErrInvalidPrice
 	}
 

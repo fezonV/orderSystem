@@ -39,9 +39,9 @@ func writeOrderError(w http.ResponseWriter, err error) {
 }
 
 func toOrderResponse(order *domain.Order) OrderResponse {
-	items := make([]OrderItemResponse, 0, len(order.OrderItems))
+	items := make([]OrderItemResponse, 0, len(order.Items()))
 
-	for _, item := range order.OrderItems {
+	for _, item := range order.Items() {
 		items = append(items, OrderItemResponse{
 			ProductID: item.ProductID,
 			Name:      item.Name,
@@ -51,8 +51,8 @@ func toOrderResponse(order *domain.Order) OrderResponse {
 	}
 
 	return OrderResponse{
-		OrderID:    order.ID,
-		Status:     string(order.Status),
+		OrderID:    order.ID(),
+		Status:     string(order.Status()),
 		OrderItems: items,
 		TotalSum:   order.TotalSum(),
 	}
@@ -125,12 +125,12 @@ func (oh *OrderHandler) AddProductHandler(w http.ResponseWriter, r *http.Request
 		writeOrderError(w, err)
 		return
 	}
-	err = oh.service.AddProductToOrder(order.ID, *product, int(request.Quantity))
+	err = oh.service.AddProductToOrder(order.ID(), *product, int(request.Quantity))
 	if err != nil {
 		writeOrderError(w, err)
 		return
 	}
-	updatedOrder, err := oh.service.GetOrder(order.ID)
+	updatedOrder, err := oh.service.GetOrder(order.ID())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -160,7 +160,7 @@ func (oh *OrderHandler) OrderPayHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	err = oh.service.PayOrder(order.ID)
+	err = oh.service.PayOrder(order.ID())
 	if err != nil {
 		writeOrderError(w, err)
 		return

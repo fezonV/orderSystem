@@ -9,16 +9,16 @@ func TestNewOrder(t *testing.T) {
 		t.Fatalf("ожидали nil error, получили %v", err)
 	}
 
-	if order.ID != 1 {
-		t.Fatalf("ожидали id = 1, получили %v", order.ID)
+	if order.ID() != 1 {
+		t.Fatalf("ожидали id = 1, получили %v", order.ID())
 	}
 
-	if order.Status != OrderStatusCreated {
-		t.Fatalf("ожидали status = создан, получили %v", order.Status)
+	if order.status != OrderStatusCreated {
+		t.Fatalf("ожидали status = создан, получили %v", order.Status())
 	}
 
-	if len(order.OrderItems) != 0 {
-		t.Fatalf("ожидали пустой список товаров, получили %v", len(order.OrderItems))
+	if len(order.Items()) != 0 {
+		t.Fatalf("ожидали пустой список товаров, получили %v", len(order.Items()))
 	}
 }
 
@@ -40,16 +40,16 @@ func TestAddProductToOrder(t *testing.T) {
 		t.Fatalf("ожидали nil error, получили %v", err)
 	}
 
-	if len(order.OrderItems) != 1 {
-		t.Fatalf("ожидали 1 позицию, получили %v", len(order.OrderItems))
+	if len(order.Items()) != 1 {
+		t.Fatalf("ожидали 1 позицию, получили %v", len(order.Items()))
 	}
 
-	if order.OrderItems[0].ID != 1 {
-		t.Fatalf("ожидали item id = 1, получили %v", order.OrderItems[0].ID)
+	if order.Items()[0].ID != 1 {
+		t.Fatalf("ожидали item id = 1, получили %v", order.Items()[0].ID)
 	}
 
-	if order.OrderItems[0].Quantity != 2 {
-		t.Fatalf("ожидали quantity = 2, получили %v", order.OrderItems[0].Quantity)
+	if order.Items()[0].Quantity != 2 {
+		t.Fatalf("ожидали quantity = 2, получили %v", order.Items()[0].Quantity)
 	}
 }
 
@@ -79,8 +79,8 @@ func TestPayOrder(t *testing.T) {
 		t.Fatalf("ожидали nil error, получили %v", err)
 	}
 
-	if order.Status != OrderStatusPaid {
-		t.Fatalf("ожидали status = оплачен, получили %v", order.Status)
+	if order.status != OrderStatusPaid {
+		t.Fatalf("ожидали status = оплачен, получили %v", order.Status())
 	}
 }
 
@@ -103,8 +103,8 @@ func TestCancelOrder(t *testing.T) {
 		t.Fatalf("ожидали nil error, получили %v", err)
 	}
 
-	if order.Status != OrderStatusCanceled {
-		t.Fatalf("ожидали status = отменен, получили %v", order.Status)
+	if order.status != OrderStatusCanceled {
+		t.Fatalf("ожидали status = отменен, получили %v", order.Status())
 	}
 }
 
