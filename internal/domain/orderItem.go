@@ -34,9 +34,9 @@ func NewOrderItem(id int64, product Product, quantity int) (*OrderItem, error) {
 	}
 	return &OrderItem{
 		id:        id,
-		productID: product.ID,
-		name:      product.Name,
-		price:     product.Price,
+		productID: product.ID(),
+		name:      product.Name(),
+		price:     product.Price(),
 		quantity:  quantity,
 	}, nil
 }

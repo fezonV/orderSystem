@@ -9,20 +9,20 @@ func TestNewProduct(t *testing.T) {
 		t.Fatalf("ожидали nil error, получили %v", err)
 	}
 
-	if product.ID != 3 {
-		t.Fatalf("Ожидали id = 3, получили %v", product.ID)
+	if product.ID() != 3 {
+		t.Fatalf("Ожидали id = 3, получили %v", product.ID())
 	}
 
-	if product.Name != "Майка" {
-		t.Fatalf("Ожидали name = Майка, получили %v", product.Name)
+	if product.Name() != "Майка" {
+		t.Fatalf("Ожидали name = Майка, получили %v", product.Name())
 	}
 
-	if product.Description != "Белая майка из хлопка" {
-		t.Fatalf("Ожидали description = Белая майка из хлопка, получили %v", product.Description)
+	if product.Description() != "Белая майка из хлопка" {
+		t.Fatalf("Ожидали description = Белая майка из хлопка, получили %v", product.Description())
 	}
 
-	if product.Price != 1000.0 {
-		t.Fatalf("Ожидали price = 1000, получили %v", product.Price)
+	if product.Price() != 1000.0 {
+		t.Fatalf("Ожидали price = 1000, получили %v", product.Price())
 	}
 }
 
