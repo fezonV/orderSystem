@@ -34,7 +34,7 @@ func TestAddProductToOrder(t *testing.T) {
 		t.Fatalf("не удалось создать заказ: %v", err)
 	}
 
-	pr, err := domain.NewProduct(123, "Чипсы", "чипсы картофельные со вкусом краба", 120.0)
+	pr, err := domain.NewProduct(123, "Чипсы", "чипсы картофельные со вкусом краба", 12_000)
 
 	if err != nil {
 		t.Fatalf("не удалось создать продукт для добавления в заказ: %v", err)
@@ -62,15 +62,15 @@ func TestAddProductToOrder(t *testing.T) {
 	if order.Items()[0].Name() != "Чипсы" {
 		t.Fatalf("ожидали Name = Чипсы, получили %v", order.Items()[0].Name())
 	}
-	if order.Items()[0].Price() != 120.0 {
-		t.Fatalf("ожидали price = 120.0, получили %v", order.Items()[0].Price())
+	if order.Items()[0].Price() != 12_000 {
+		t.Fatalf("ожидали price = 12000 копеек, получили %v", order.Items()[0].Price())
 	}
 }
 
 func TestAddProductToOrderNotFound(t *testing.T) {
 	repo := memory.NewOrderRepository()
 	os := NewOrderService(repo)
-	pr, err := domain.NewProduct(1, "кеды", "кеды жоские", 125.00)
+	pr, err := domain.NewProduct(1, "кеды", "кеды жоские", 12_500)
 	if err != nil {
 		t.Fatalf("не удалось создать продукт: %v", err)
 	}
@@ -84,7 +84,7 @@ func TestAddProductToOrderWithInvalidQuantity(t *testing.T) {
 	repo := memory.NewOrderRepository()
 	os := NewOrderService(repo)
 
-	pr, err := domain.NewProduct(1, "рыба", "вяленая", 125.00)
+	pr, err := domain.NewProduct(1, "рыба", "вяленая", 12_500)
 
 	if err != nil {
 		t.Fatalf("не удалось создать продукт: %v", err)
@@ -129,7 +129,7 @@ func TestPayOrder(t *testing.T) {
 	if err != nil {
 		t.Fatalf("не удалось создать заказ")
 	}
-	pr, _ := domain.NewProduct(1, "рыба", "вяленая", 125.00)
+	pr, _ := domain.NewProduct(1, "рыба", "вяленая", 12_500)
 	err = os.AddProductToOrder(1, *pr, 2)
 	if err != nil {
 		t.Fatalf("не удалось добавить продукт: %v", err)

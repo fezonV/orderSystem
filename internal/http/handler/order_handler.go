@@ -39,22 +39,23 @@ func writeOrderError(w http.ResponseWriter, err error) {
 }
 
 func toOrderResponse(order *domain.Order) OrderResponse {
-	items := make([]OrderItemResponse, 0, len(order.Items()))
+	orderItems := order.Items()
+	items := make([]OrderItemResponse, 0, len(orderItems))
 
-	for _, item := range order.Items() {
+	for _, item := range orderItems {
 		items = append(items, OrderItemResponse{
-			ProductID: item.ProductID(),
-			Name:      item.Name(),
-			Price:     item.Price(),
-			Quantity:  int64(item.Quantity()),
+			ProductID:    item.ProductID(),
+			Name:         item.Name(),
+			PriceKopecks: int64(item.Price()),
+			Quantity:     int64(item.Quantity()),
 		})
 	}
 
 	return OrderResponse{
-		OrderID:    order.ID(),
-		Status:     string(order.Status()),
-		OrderItems: items,
-		TotalSum:   order.TotalSum(),
+		OrderID:         order.ID(),
+		Status:          string(order.Status()),
+		OrderItems:      items,
+		TotalSumKopecks: int64(order.TotalSum()),
 	}
 }
 
@@ -115,7 +116,12 @@ func (oh *OrderHandler) AddProductHandler(w http.ResponseWriter, r *http.Request
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	product, err := domain.NewProduct(request.ProductID, request.Name, request.Description, request.Price)
+	product, err := domain.NewProduct(
+		request.ProductID,
+		request.Name,
+		request.Description,
+		domain.Money(request.PriceKopecks),
+	)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

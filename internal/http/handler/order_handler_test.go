@@ -127,7 +127,7 @@ func TestAddProductHandler(t *testing.T) {
 		"product_id": 3,
 		"name": "Майка",
 		"description": "Белая майка",
-		"price": 1000,
+		"price_kopecks": 100000,
 		"quantity": 2
 	}`)
 
@@ -161,8 +161,8 @@ func TestAddProductHandler(t *testing.T) {
 		t.Fatalf("ожидали quantity = 2, получили %v", response.OrderItems[0].Quantity)
 	}
 
-	if response.TotalSum != 2000 {
-		t.Fatalf("ожидали total sum = 2000, получили %v", response.TotalSum)
+	if response.TotalSumKopecks != 200_000 {
+		t.Fatalf("ожидали total sum = 200000 копеек, получили %v", response.TotalSumKopecks)
 	}
 }
 
@@ -180,7 +180,7 @@ func TestAddProductHandlerWithInvalidQuantity(t *testing.T) {
 		"product_id": 3,
 		"name": "Майка",
 		"description": "Белая майка",
-		"price": 1000,
+		"price_kopecks": 100000,
 		"quantity": 0
 	}`)
 
@@ -207,7 +207,7 @@ func TestOrderPayHandler(t *testing.T) {
 		t.Fatalf("не удалось создать заказ: %v", err)
 	}
 
-	product, err := domain.NewProduct(3, "Майка", "Белая майка", 1000)
+	product, err := domain.NewProduct(3, "Майка", "Белая майка", 100_000)
 	if err != nil {
 		t.Fatalf("не удалось создать товар: %v", err)
 	}
@@ -306,7 +306,7 @@ func TestCancelPaidOrderHandler(t *testing.T) {
 		t.Fatalf("не удалось создать заказ: %v", err)
 	}
 
-	product, err := domain.NewProduct(3, "Майка", "Белая майка", 1000)
+	product, err := domain.NewProduct(3, "Майка", "Белая майка", 100_000)
 	if err != nil {
 		t.Fatalf("не удалось создать товар: %v", err)
 	}

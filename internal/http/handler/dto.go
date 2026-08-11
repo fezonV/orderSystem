@@ -1,25 +1,25 @@
 package handler
 
 type OrderItemResponse struct {
-	ProductID int64   `json:"product_id"`
-	Name      string  `json:"name"`
-	Price     float64 `json:"price"`
-	Quantity  int64   `json:"quantity"`
+	ProductID    int64  `json:"product_id"`
+	Name         string `json:"name"`
+	PriceKopecks int64  `json:"price_kopecks"`
+	Quantity     int64  `json:"quantity"`
 }
 
 type OrderResponse struct {
-	OrderID    int64               `json:"order_id"`
-	Status     string              `json:"status"`
-	OrderItems []OrderItemResponse `json:"orderItems"`
-	TotalSum   float64             `json:"total_sum"`
+	OrderID         int64               `json:"order_id"`
+	Status          string              `json:"status"`
+	OrderItems      []OrderItemResponse `json:"orderItems"`
+	TotalSumKopecks int64               `json:"total_sum_kopecks"`
 }
 
 type AddProductToOrderRequest struct {
-	ProductID   int64   `json:"product_id"`
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Price       float64 `json:"price"`
-	Quantity    int64   `json:"quantity"`
+	ProductID    int64  `json:"product_id"`
+	Name         string `json:"name"`
+	Description  string `json:"description"`
+	PriceKopecks int64  `json:"price_kopecks"`
+	Quantity     int64  `json:"quantity"`
 }
 
 type ErrorResponse struct {

@@ -30,9 +30,17 @@ func TestNewOrderWithNegativeID(t *testing.T) {
 	}
 }
 
+func TestNewOrderWithZeroID(t *testing.T) {
+	_, err := NewOrder(0)
+
+	if err != ErrInvalidID {
+		t.Fatalf("ожидали ErrInvalidID, получили %v", err)
+	}
+}
+
 func TestAddProductToOrder(t *testing.T) {
 	order, _ := NewOrder(1)
-	product, _ := NewProduct(3, "Майка", "Белая майка из хлопка", 1000.0)
+	product, _ := NewProduct(3, "Майка", "Белая майка из хлопка", 100_000)
 
 	err := order.AddProduct(*product, 2)
 
@@ -53,24 +61,37 @@ func TestAddProductToOrder(t *testing.T) {
 	}
 }
 
+func TestItemsReturnsCopy(t *testing.T) {
+	order, _ := NewOrder(1)
+	product, _ := NewProduct(1, "Майка", "Белая майка", 100_000)
+	_ = order.AddProduct(*product, 2)
+
+	items := order.Items()
+	items[0] = OrderItem{}
+
+	if order.Items()[0].Quantity() != 2 {
+		t.Fatal("изменение копии Items изменило внутреннее состояние заказа")
+	}
+}
+
 func TestTotalSum(t *testing.T) {
 	order, _ := NewOrder(1)
-	product1, _ := NewProduct(1, "Майка", "Белая майка", 1000.0)
-	product2, _ := NewProduct(2, "Кроссовки", "Белые кроссовки", 7000.0)
+	product1, _ := NewProduct(1, "Майка", "Белая майка", 100_000)
+	product2, _ := NewProduct(2, "Кроссовки", "Белые кроссовки", 700_000)
 
 	_ = order.AddProduct(*product1, 2)
 	_ = order.AddProduct(*product2, 1)
 
 	sum := order.TotalSum()
 
-	if sum != 9000.0 {
-		t.Fatalf("ожидали сумму 9000, получили %v", sum)
+	if sum != 900_000 {
+		t.Fatalf("ожидали сумму 900000 копеек, получили %v", sum)
 	}
 }
 
 func TestPayOrder(t *testing.T) {
 	order, _ := NewOrder(1)
-	product, _ := NewProduct(1, "Майка", "Белая майка", 1000.0)
+	product, _ := NewProduct(1, "Майка", "Белая майка", 100_000)
 	_ = order.AddProduct(*product, 2)
 
 	err := order.Pay()
@@ -110,7 +131,7 @@ func TestCancelOrder(t *testing.T) {
 
 func TestAddProductToPaidOrder(t *testing.T) {
 	order, _ := NewOrder(1)
-	product, _ := NewProduct(1, "Майка", "Белая майка", 1000.0)
+	product, _ := NewProduct(1, "Майка", "Белая майка", 100_000)
 	_ = order.AddProduct(*product, 2)
 	_ = order.Pay()
 
@@ -123,7 +144,7 @@ func TestAddProductToPaidOrder(t *testing.T) {
 
 func TestAddProductToCanceledOrder(t *testing.T) {
 	order, _ := NewOrder(1)
-	product, _ := NewProduct(1, "Майка", "Белая майка", 1000.0)
+	product, _ := NewProduct(1, "Майка", "Белая майка", 100_000)
 	_ = order.Cancel()
 
 	err := order.AddProduct(*product, 1)

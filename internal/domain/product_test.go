@@ -3,7 +3,7 @@ package domain
 import "testing"
 
 func TestNewProduct(t *testing.T) {
-	product, err := NewProduct(3, "Майка", "Белая майка из хлопка", 1000.0)
+	product, err := NewProduct(3, "Майка", "Белая майка из хлопка", 100_000)
 
 	if err != nil {
 		t.Fatalf("ожидали nil error, получили %v", err)
@@ -21,13 +21,13 @@ func TestNewProduct(t *testing.T) {
 		t.Fatalf("Ожидали description = Белая майка из хлопка, получили %v", product.Description())
 	}
 
-	if product.Price() != 1000.0 {
-		t.Fatalf("Ожидали price = 1000, получили %v", product.Price())
+	if product.Price() != 100_000 {
+		t.Fatalf("Ожидали price = 100000 копеек, получили %v", product.Price())
 	}
 }
 
 func TestNewProductWithNegativeID(t *testing.T) {
-	_, err := NewProduct(-1, "Майка", "Белая майка из хлопка", 1000.0)
+	_, err := NewProduct(-1, "Майка", "Белая майка из хлопка", 100_000)
 
 	if err != ErrInvalidID {
 		t.Fatalf("ожидали ErrInvalidID, получили %v", err)
@@ -35,7 +35,23 @@ func TestNewProductWithNegativeID(t *testing.T) {
 }
 
 func TestNewProductWithNegativePrice(t *testing.T) {
-	_, err := NewProduct(3, "Майка", "Белая майка из хлопка", -1000.0)
+	_, err := NewProduct(3, "Майка", "Белая майка из хлопка", -100_000)
+
+	if err != ErrInvalidPrice {
+		t.Fatalf("ожидали ErrInvalidPrice, получили %v", err)
+	}
+}
+
+func TestNewProductWithZeroID(t *testing.T) {
+	_, err := NewProduct(0, "Майка", "Белая майка", 100_000)
+
+	if err != ErrInvalidID {
+		t.Fatalf("ожидали ErrInvalidID, получили %v", err)
+	}
+}
+
+func TestNewProductWithZeroPrice(t *testing.T) {
+	_, err := NewProduct(1, "Майка", "Белая майка", 0)
 
 	if err != ErrInvalidPrice {
 		t.Fatalf("ожидали ErrInvalidPrice, получили %v", err)
