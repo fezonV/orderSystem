@@ -51,19 +51,19 @@ func TestAddProductToOrder(t *testing.T) {
 	if len(order.Items()) != 1 {
 		t.Fatalf("ожидали 1 позицию, получили %v", len(order.Items()))
 	}
-	if order.Items()[0].ProductID != 123 {
-		t.Fatalf("ожидали product id = 123, получили %v", order.Items()[0].ProductID)
+	if order.Items()[0].ProductID() != 123 {
+		t.Fatalf("ожидали product id = 123, получили %v", order.Items()[0].ProductID())
 	}
 
-	if order.Items()[0].ID != 1 {
-		t.Fatalf("ожидали id = 1, получили %v", order.Items()[0].ID)
+	if order.Items()[0].ID() != 1 {
+		t.Fatalf("ожидали id = 1, получили %v", order.Items()[0].ID())
 	}
 
-	if order.Items()[0].Name != "Чипсы" {
-		t.Fatalf("ожидали Name = Чипсы, получили %v", order.Items()[0].Name)
+	if order.Items()[0].Name() != "Чипсы" {
+		t.Fatalf("ожидали Name = Чипсы, получили %v", order.Items()[0].Name())
 	}
-	if order.Items()[0].Price != 120.0 {
-		t.Fatalf("ожидали price = 120.0, получили %v", order.Items()[0].Price)
+	if order.Items()[0].Price() != 120.0 {
+		t.Fatalf("ожидали price = 120.0, получили %v", order.Items()[0].Price())
 	}
 }
 

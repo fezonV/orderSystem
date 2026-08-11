@@ -43,10 +43,10 @@ func toOrderResponse(order *domain.Order) OrderResponse {
 
 	for _, item := range order.Items() {
 		items = append(items, OrderItemResponse{
-			ProductID: item.ProductID,
-			Name:      item.Name,
-			Price:     item.Price,
-			Quantity:  int64(item.Quantity),
+			ProductID: item.ProductID(),
+			Name:      item.Name(),
+			Price:     item.Price(),
+			Quantity:  int64(item.Quantity()),
 		})
 	}
 

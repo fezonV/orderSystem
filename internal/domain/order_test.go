@@ -44,12 +44,12 @@ func TestAddProductToOrder(t *testing.T) {
 		t.Fatalf("ожидали 1 позицию, получили %v", len(order.Items()))
 	}
 
-	if order.Items()[0].ID != 1 {
-		t.Fatalf("ожидали item id = 1, получили %v", order.Items()[0].ID)
+	if order.Items()[0].ID() != 1 {
+		t.Fatalf("ожидали item id = 1, получили %v", order.Items()[0].ID())
 	}
 
-	if order.Items()[0].Quantity != 2 {
-		t.Fatalf("ожидали quantity = 2, получили %v", order.Items()[0].Quantity)
+	if order.Items()[0].Quantity() != 2 {
+		t.Fatalf("ожидали quantity = 2, получили %v", order.Items()[0].Quantity())
 	}
 }
 

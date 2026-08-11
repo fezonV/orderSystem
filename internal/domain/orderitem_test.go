@@ -10,20 +10,20 @@ func TestNewOrderItem(t *testing.T) {
 		t.Fatalf("ожидали nil error, получили %v", err)
 	}
 
-	if orderItem.ID != 3 {
-		t.Fatalf("Ожидали id = 3, получили %v", orderItem.ID)
+	if orderItem.ID() != 3 {
+		t.Fatalf("Ожидали id = 3, получили %v", orderItem.ID())
 	}
 
-	if orderItem.Name != "Майка" {
-		t.Fatalf("Ожидали name = Майка, получили %v", orderItem.Name)
+	if orderItem.Name() != "Майка" {
+		t.Fatalf("Ожидали name = Майка, получили %v", orderItem.Name())
 	}
 
-	if orderItem.Price != 1000.0 {
-		t.Fatalf("Ожидали price = 1000, получили %v", orderItem.Price)
+	if orderItem.Price() != 1000.0 {
+		t.Fatalf("Ожидали price = 1000, получили %v", orderItem.Price())
 	}
 
-	if orderItem.Quantity != 10 {
-		t.Fatalf("Ожидали quantity = 10, получили %v", orderItem.Quantity)
+	if orderItem.Quantity() != 10 {
+		t.Fatalf("Ожидали quantity = 10, получили %v", orderItem.Quantity())
 	}
 }
 

@@ -65,7 +65,7 @@ func (o *Order) AddProduct(product Product, quantity int) error {
 func (o Order) TotalSum() float64 {
 	sum := 0.0
 	for _, v := range o.items {
-		sum += v.Price * float64(v.Quantity)
+		sum += v.Price() * float64(v.Quantity())
 	}
 	return sum
 }
