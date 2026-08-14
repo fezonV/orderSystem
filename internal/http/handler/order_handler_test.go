@@ -212,7 +212,7 @@ func TestOrderPayHandler(t *testing.T) {
 		t.Fatalf("не удалось создать товар: %v", err)
 	}
 
-	err = service.AddProductToOrder(1, *product, 2)
+	_, err = service.AddProductToOrder(1, *product, 2)
 	if err != nil {
 		t.Fatalf("не удалось добавить товар в заказ: %v", err)
 	}
@@ -311,7 +311,7 @@ func TestCancelPaidOrderHandler(t *testing.T) {
 		t.Fatalf("не удалось создать товар: %v", err)
 	}
 
-	err = service.AddProductToOrder(1, *product, 2)
+	_, err = service.AddProductToOrder(1, *product, 2)
 	if err != nil {
 		t.Fatalf("не удалось добавить товар в заказ: %v", err)
 	}

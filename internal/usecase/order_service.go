@@ -32,15 +32,15 @@ func (s *OrderService) CreateOrder() (*domain.Order, error) {
 func (s *OrderService) AddProductToOrder(
 	orderID int64,
 	p domain.Product,
-	quantity int) error {
+	quantity int) (domain.Order, error) {
 	order, err := s.orderRepo.GetByID(orderID)
 	if err != nil {
-		return err
+		return domain.Order{}, err
 	}
 	if err := order.AddProduct(p, quantity); err != nil {
-		return err
+		return domain.Order{}, err
 	}
-	return s.orderRepo.Save(&order)
+	return order, s.orderRepo.Save(&order)
 
 }
 

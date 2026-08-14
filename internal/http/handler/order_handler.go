@@ -126,22 +126,12 @@ func (oh *OrderHandler) AddProductHandler(w http.ResponseWriter, r *http.Request
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	order, err := oh.service.GetOrder(id)
+	order, err := oh.service.AddProductToOrder(id, *product, int(request.Quantity))
 	if err != nil {
 		writeOrderError(w, err)
 		return
 	}
-	err = oh.service.AddProductToOrder(order.ID(), *product, int(request.Quantity))
-	if err != nil {
-		writeOrderError(w, err)
-		return
-	}
-	updatedOrder, err := oh.service.GetOrder(order.ID())
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	response := toOrderResponse(updatedOrder)
+	response := toOrderResponse(order)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(response)

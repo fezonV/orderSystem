@@ -39,15 +39,11 @@ func TestAddProductToOrder(t *testing.T) {
 	if err != nil {
 		t.Fatalf("не удалось создать продукт для добавления в заказ: %v", err)
 	}
-	err = service.AddProductToOrder(1, *pr, 64)
+	order, err := service.AddProductToOrder(1, *pr, 64)
 	if err != nil {
 		t.Fatalf("не удалось добавить продукт в заказ: %v", err)
 	}
 
-	order, err := service.orderRepo.GetByID(1)
-	if err != nil {
-		t.Fatalf("не удалось получить заказ: %v", err)
-	}
 	if len(order.Items()) != 1 {
 		t.Fatalf("ожидали 1 позицию, получили %v", len(order.Items()))
 	}
@@ -74,7 +70,7 @@ func TestAddProductToOrderNotFound(t *testing.T) {
 	if err != nil {
 		t.Fatalf("не удалось создать продукт: %v", err)
 	}
-	err = os.AddProductToOrder(1, *pr, 25)
+	_, err = os.AddProductToOrder(1, *pr, 25)
 	if err != domain.ErrOrderNotFound {
 		t.Fatalf("ожидали ErrOrderNotFound, получили %v", err)
 	}
@@ -95,7 +91,7 @@ func TestAddProductToOrderWithInvalidQuantity(t *testing.T) {
 	if err != nil {
 		t.Fatalf("не удалось создать заказ: %v", err)
 	}
-	err = os.AddProductToOrder(1, *pr, -2)
+	_, err = os.AddProductToOrder(1, *pr, -2)
 
 	if err != domain.ErrInvalidQuantity {
 		t.Fatalf("ожидали ErrInvalidQuantity, получили %v", err)
@@ -130,7 +126,7 @@ func TestPayOrder(t *testing.T) {
 		t.Fatalf("не удалось создать заказ")
 	}
 	pr, _ := domain.NewProduct(1, "рыба", "вяленая", 12_500)
-	err = os.AddProductToOrder(1, *pr, 2)
+	_, err = os.AddProductToOrder(1, *pr, 2)
 	if err != nil {
 		t.Fatalf("не удалось добавить продукт: %v", err)
 	}

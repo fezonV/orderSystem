@@ -3,10 +3,12 @@ package memory
 import (
 	"orderSystem/internal/domain"
 	"orderSystem/internal/repository"
+	"sync"
 )
 
 type OrderRepository struct {
 	orders map[int64]domain.Order
+	mtx    sync.RWMutex
 }
 
 func NewOrderRepository() repository.OrderRepository {
@@ -15,11 +17,15 @@ func NewOrderRepository() repository.OrderRepository {
 	}
 }
 func (r *OrderRepository) Save(order *domain.Order) error {
+	defer r.mtx.Unlock()
+	r.mtx.Lock()
 	r.orders[order.ID()] = order.Clone()
 	return nil
 }
 
 func (r *OrderRepository) GetByID(id int64) (domain.Order, error) {
+	defer r.mtx.RUnlock()
+	r.mtx.RLock()
 	order, ok := r.orders[id]
 	if !ok {
 		return domain.Order{}, domain.ErrOrderNotFound
