@@ -6,24 +6,24 @@ import (
 )
 
 type OrderRepository struct {
-	orders map[int64]*domain.Order
+	orders map[int64]domain.Order
 }
 
 func NewOrderRepository() repository.OrderRepository {
 	return &OrderRepository{
-		orders: make(map[int64]*domain.Order),
+		orders: make(map[int64]domain.Order),
 	}
 }
 func (r *OrderRepository) Save(order *domain.Order) error {
-	r.orders[order.ID()] = order
+	r.orders[order.ID()] = order.Clone()
 	return nil
 }
 
-func (r *OrderRepository) GetByID(id int64) (*domain.Order, error) {
+func (r *OrderRepository) GetByID(id int64) (domain.Order, error) {
 	order, ok := r.orders[id]
 	if !ok {
-		return nil, domain.ErrOrderNotFound
+		return domain.Order{}, domain.ErrOrderNotFound
 	}
 
-	return order, nil
+	return order.Clone(), nil
 }

@@ -41,3 +41,70 @@ func TestGetOrderByIDNotFound(t *testing.T) {
 		t.Fatalf("получили заказ по неправильному id")
 	}
 }
+
+func TestSaveStoresCopy(t *testing.T) {
+	or := NewOrderRepository()
+
+	order, err := domain.NewOrder(1)
+	if err != nil {
+		t.Fatalf("не удалось создать заказ: %v", err)
+	}
+
+	if err := or.Save(order); err != nil {
+		t.Fatalf("не удалось сохранить заказ: %v", err)
+	}
+
+	// Изменение исходного заказа после Save не должно менять сохраненный заказ.
+	if err := order.Cancel(); err != nil {
+		t.Fatalf("не удалось отменить заказ: %v", err)
+	}
+
+	savedOrder, err := or.GetByID(1)
+	if err != nil {
+		t.Fatalf("не удалось получить заказ: %v", err)
+	}
+
+	if savedOrder.Status() != domain.OrderStatusCreated {
+		t.Fatalf(
+			"ожидали статус %v, получили %v",
+			domain.OrderStatusCreated,
+			savedOrder.Status(),
+		)
+	}
+}
+
+func TestGetByIDReturnsCopy(t *testing.T) {
+	or := NewOrderRepository()
+
+	order, err := domain.NewOrder(1)
+	if err != nil {
+		t.Fatalf("не удалось создать заказ: %v", err)
+	}
+
+	if err := or.Save(order); err != nil {
+		t.Fatalf("не удалось сохранить заказ: %v", err)
+	}
+
+	// Изменение результата GetByID без Save не должно менять сохраненный заказ.
+	receivedOrder, err := or.GetByID(1)
+	if err != nil {
+		t.Fatalf("не удалось получить заказ: %v", err)
+	}
+
+	if err := receivedOrder.Cancel(); err != nil {
+		t.Fatalf("не удалось отменить заказ: %v", err)
+	}
+
+	savedOrder, err := or.GetByID(1)
+	if err != nil {
+		t.Fatalf("не удалось повторно получить заказ: %v", err)
+	}
+
+	if savedOrder.Status() != domain.OrderStatusCreated {
+		t.Fatalf(
+			"ожидали статус %v, получили %v",
+			domain.OrderStatusCreated,
+			savedOrder.Status(),
+		)
+	}
+}

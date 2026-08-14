@@ -38,7 +38,7 @@ func writeOrderError(w http.ResponseWriter, err error) {
 	http.Error(w, err.Error(), status)
 }
 
-func toOrderResponse(order *domain.Order) OrderResponse {
+func toOrderResponse(order domain.Order) OrderResponse {
 	orderItems := order.Items()
 	items := make([]OrderItemResponse, 0, len(orderItems))
 
@@ -68,7 +68,7 @@ func (oh *OrderHandler) CreateOrderHandler(w http.ResponseWriter, r *http.Reques
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	response := toOrderResponse(order)
+	response := toOrderResponse(*order)
 	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

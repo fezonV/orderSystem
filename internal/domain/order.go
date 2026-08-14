@@ -15,6 +15,16 @@ type Order struct {
 	nextItemID int64
 }
 
+// копирование заказа без ссылок
+func (o Order) Clone() Order {
+	result := o
+
+	result.items = make([]OrderItem, len(o.items))
+	copy(result.items, o.items)
+
+	return result
+}
+
 func (o *Order) ID() int64 {
 	return o.id
 }

@@ -40,11 +40,11 @@ func (s *OrderService) AddProductToOrder(
 	if err := order.AddProduct(p, quantity); err != nil {
 		return err
 	}
-	return s.orderRepo.Save(order)
+	return s.orderRepo.Save(&order)
 
 }
 
-func (s *OrderService) GetOrder(id int64) (*domain.Order, error) {
+func (s *OrderService) GetOrder(id int64) (domain.Order, error) {
 	return s.orderRepo.GetByID(id)
 }
 
@@ -56,7 +56,7 @@ func (s *OrderService) PayOrder(id int64) error {
 	if err := order.Pay(); err != nil {
 		return err
 	}
-	return s.orderRepo.Save(order)
+	return s.orderRepo.Save(&order)
 }
 
 func (s *OrderService) CancelOrder(id int64) error {
@@ -67,5 +67,5 @@ func (s *OrderService) CancelOrder(id int64) error {
 	if err := order.Cancel(); err != nil {
 		return err
 	}
-	return s.orderRepo.Save(order)
+	return s.orderRepo.Save(&order)
 }

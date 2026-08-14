@@ -74,6 +74,19 @@ func TestItemsReturnsCopy(t *testing.T) {
 	}
 }
 
+func TestCloneCopiesItems(t *testing.T) {
+	order, _ := NewOrder(1)
+	product, _ := NewProduct(1, "Майка", "Белая майка", 100_000)
+	_ = order.AddProduct(*product, 2)
+
+	clone := order.Clone()
+	clone.items[0].quantity = 99
+
+	if order.items[0].quantity != 2 {
+		t.Fatal("изменение items клона изменило исходный заказ")
+	}
+}
+
 func TestTotalSum(t *testing.T) {
 	order, _ := NewOrder(1)
 	product1, _ := NewProduct(1, "Майка", "Белая майка", 100_000)
