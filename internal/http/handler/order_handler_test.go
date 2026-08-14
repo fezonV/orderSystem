@@ -316,7 +316,7 @@ func TestCancelPaidOrderHandler(t *testing.T) {
 		t.Fatalf("не удалось добавить товар в заказ: %v", err)
 	}
 
-	err = service.PayOrder(1)
+	_, err = service.PayOrder(1)
 	if err != nil {
 		t.Fatalf("не удалось оплатить заказ: %v", err)
 	}

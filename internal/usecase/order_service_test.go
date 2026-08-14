@@ -131,9 +131,13 @@ func TestPayOrder(t *testing.T) {
 		t.Fatalf("не удалось добавить продукт: %v", err)
 	}
 
-	err = os.PayOrder(1)
+	order, err := os.PayOrder(1)
 	if err != nil {
 		t.Fatalf("не удалось оплатить заказ: %v", err)
+	}
+
+	if order.Status() != domain.OrderStatusPaid {
+		t.Fatalf("ожидали статус %v, получили %v", domain.OrderStatusPaid, order.Status())
 	}
 }
 
@@ -145,10 +149,12 @@ func TestCancelOrder(t *testing.T) {
 	if err != nil {
 		t.Fatalf("не удалось создать заказ")
 	}
-	os.CancelOrder(1)
-	order, err := os.GetOrder(1)
+	order, err := os.CancelOrder(1)
+	if err != nil {
+		t.Fatalf("не удалось отменить заказ: %v", err)
+	}
 
 	if order.Status() != domain.OrderStatusCanceled {
-		t.Fatalf("ожидали отменен, получили %v", order.Status())
+		t.Fatalf("ожидали статус %v, получили %v", domain.OrderStatusCanceled, order.Status())
 	}
 }

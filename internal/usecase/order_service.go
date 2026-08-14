@@ -40,32 +40,43 @@ func (s *OrderService) AddProductToOrder(
 	if err := order.AddProduct(p, quantity); err != nil {
 		return domain.Order{}, err
 	}
-	return order, s.orderRepo.Save(&order)
+	if err := s.orderRepo.Save(&order); err != nil {
+		return domain.Order{}, err
+	}
 
+	return order, nil
 }
 
 func (s *OrderService) GetOrder(id int64) (domain.Order, error) {
 	return s.orderRepo.GetByID(id)
 }
 
-func (s *OrderService) PayOrder(id int64) error {
+func (s *OrderService) PayOrder(id int64) (domain.Order, error) {
 	order, err := s.orderRepo.GetByID(id)
 	if err != nil {
-		return err
+		return domain.Order{}, err
 	}
 	if err := order.Pay(); err != nil {
-		return err
+		return domain.Order{}, err
 	}
-	return s.orderRepo.Save(&order)
+	if err := s.orderRepo.Save(&order); err != nil {
+		return domain.Order{}, err
+	}
+
+	return order, nil
 }
 
-func (s *OrderService) CancelOrder(id int64) error {
+func (s *OrderService) CancelOrder(id int64) (domain.Order, error) {
 	order, err := s.orderRepo.GetByID(id)
 	if err != nil {
-		return err
+		return domain.Order{}, err
 	}
 	if err := order.Cancel(); err != nil {
-		return err
+		return domain.Order{}, err
 	}
-	return s.orderRepo.Save(&order)
+	if err := s.orderRepo.Save(&order); err != nil {
+		return domain.Order{}, err
+	}
+
+	return order, nil
 }

@@ -150,25 +150,13 @@ func (oh *OrderHandler) OrderPayHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	order, err := oh.service.GetOrder(id)
+	order, err := oh.service.PayOrder(id)
 	if err != nil {
 		writeOrderError(w, err)
 		return
 	}
 
-	err = oh.service.PayOrder(order.ID())
-	if err != nil {
-		writeOrderError(w, err)
-		return
-	}
-
-	updatedOrder, err := oh.service.GetOrder(id)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	response := toOrderResponse(updatedOrder)
+	response := toOrderResponse(order)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(response)
@@ -186,17 +174,13 @@ func (oh *OrderHandler) CancelOrderHandler(w http.ResponseWriter, r *http.Reques
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = oh.service.CancelOrder(id)
+	order, err := oh.service.CancelOrder(id)
 	if err != nil {
 		writeOrderError(w, err)
 		return
 	}
-	updatedOrder, err := oh.service.GetOrder(id)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	response := toOrderResponse(updatedOrder)
+
+	response := toOrderResponse(order)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
